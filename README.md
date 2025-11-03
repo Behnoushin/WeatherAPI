@@ -1,8 +1,7 @@
 # WeatherAPI 🌤️
 
-A simple **.NET 9 Web API** that provides current weather and air quality information for a given city using the [OpenWeatherMap API](https://openweathermap.org/api).  
-
----
+**WeatherAPI** is a **.NET 9 Web API project** that provides current weather and air quality information for a given city using the [OpenWeatherMap API](https://openweathermap.org/api).  
+This project also includes **Docker setup, Redis caching, and request caching** to improve performance.
 
 ## Features 🚀
 
@@ -11,9 +10,10 @@ A simple **.NET 9 Web API** that provides current weather and air quality inform
 - Retrieve **latitude and longitude** of the city.  
 - Clean architecture with **Controllers**, **Services**, and **Models**.  
 - **Swagger UI** support for easy API testing.  
-- Simple **unit tests** using xUnit.
+- **Caching using Redis** for faster responses (5-minute expiration per city).  
+- Simple **unit tests** using xUnit.  
+- **Dockerized** setup for both WeatherAPI and Redis.
 
----
 
 ## Installation 💻
 
@@ -23,8 +23,8 @@ git clone https://github.com/Behnoushin/WeatherAPI.git
 cd WeatherAPI/WeatherAPI
 ```
 
-Set your OpenWeatherMap API key in appsettings.Development.json or use an .env approach:
-
+2. Set your OpenWeatherMap API key:
+Set it in WeatherAPI/appsettings.Development.json:
 ```json
 {
   "OpenWeatherMap": {
@@ -32,19 +32,42 @@ Set your OpenWeatherMap API key in appsettings.Development.json or use an .env a
   }
 }
 ```
+✅ Note: API Key is never exposed in Docker Compose; it’s read securely from appsettings.
 
-Restore dependencies:
+3. Docker & Redis Setup
+
+Make sure Docker is installed on your machine.
+
+- Start Redis and WeatherAPI using Docker Compose:
+```bash
+docker compose up -d --build
+```
+
+- WeatherAPI service ports:
+```bash
+HTTP: 5002
+HTTPS: 5003
+Redis: 6380
+```
+
+- **Redis caching:**  
+  - First request to a city fetches data from OpenWeatherMap (slower).  
+  - Subsequent requests return cached data from Redis (much faster).  
+  - Cache expires automatically after 5 minutes.
+
+
+4. Restore dependencies:
 ```bash
 dotnet restore
 ```
 
-Run the project:
+5. Run the project:
 ```bash
 dotnet run
 ```
 
 ## API Endpoints 🌐
-Get Weather by City
+### Get Weather by City
 
 Request:
 ```bash
@@ -82,9 +105,11 @@ dotnet test
 - C#
 - ASP.NET Core Web API
 - Newtonsoft.Json
+- Redis
+- Docker & Docker Compose
 - xUnit (for unit testing)
 - Swagger/OpenAPI
 
 
 ## Author 👩‍💻
-Behnoush Shahraeeni - Backend Developer
+Behnoush Shahraeini - Backend Developer
