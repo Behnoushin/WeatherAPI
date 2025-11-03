@@ -3,9 +3,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WeatherAPI.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args); 
 
 // ------------------- Services -------------------
+// Add Redis Cache
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6380"; 
+    options.InstanceName = "weather-cache:";
+});
+
 // Add Controllers
 builder.Services.AddControllers();
 
