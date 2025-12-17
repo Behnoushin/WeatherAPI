@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WeatherAPI.Services;
+using WeatherAPI.Middleware;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,6 +56,9 @@ if (app.Environment.IsDevelopment())
 
 // Enable HTTPS redirection
 app.UseHttpsRedirection();
+
+// ------------------- Rate Limiting -------------------
+app.UseMiddleware<RateLimitMiddleware>();
 
 // Enable authorization middleware (if needed in future)
 app.UseAuthorization();
